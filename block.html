@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Gold bloks v0.1</title>
+	<style>
+		body{
+			margin: 0;
+			padding: 0;
+			-moz-user-select: none;
+			-khtml-user-select: none;
+			user-select: none; 
+		}
+		.page{
+			margin: auto 20px;
+			background-color: #F5F6CE;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			align-items: stretch;
+		}
+		div.header{
+			flex-grow: 1;
+			flex-basis: 25%;
+		}
+		.content{
+			flex-grow: 2;
+			flex-basis: 50%;
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: stretch;
+		}
+		.leftContent{
+			flex-grow: 1;
+			flex-basis: 25%;
+		}
+		.centerContent{
+			background-image: url(http://img.budsvit.ua/items/500/3/39/392/3926/3926836_2591233.jpg);
+			height: 450px;
+			width: 400px;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			padding-top: 30px;
+		}
+		.information{
+			display: flex;
+			justify-content: space-around;
+			height: 3em;
+		}
+		.information div{
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin: 10px;
+			border-radius: 5px;
+			text-align: center;
+			flex-grow: 1;
+			background-color: grey;
+		}
+		.display:nth-child(2){
+			color: orange;
+			font-size: 2em;
+		}
+		.rightContent{
+			flex-grow: 1;
+			flex-basis: 25%;
+		}
+		table{
+			background-color: #4B2C09;
+			width: 296px;
+			height: 296px;
+			border-collapse: collapse;
+			border: 1px solid black;
+
+		}
+		table.backgroundTable, th, td {
+			border: 1px dashed grey;
+		}
+		.control{
+			margin: 10px auto;
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+		}
+		.footer{
+			flex-grow: 1;
+			flex-basis: 25%; 
+		}
+		.blocks{
+			position: relative;
+			width: 296px;
+			height: 296px;
+		}
+		.block{
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin: 2px;
+			cursor: move;
+			position: absolute;
+			border-radius: 7px;
+			border: 5px inset gold;
+			color: #BE0000;
+		}
+		.buttons{
+			border-radius: .6em;
+			background-color: orange;
+			border-color: grey;
+			width: 5em;
+			height: 2.4em;
+			outline: none;
+		}
+	</style>
+</head>
+<body>
+	<div class="page">
+		<div class="header"></div>
+		<div class="content">
+			<div class="leftContent"></div>
+			<div class="centerContent">
+				<div class="information">
+					<div class="display" >TOTAL:<span id="total">0</span></div>
+					<div class="display" id="time">00:00</div>
+					<div class="display" >STAGE:<span id="stage">0</span></div>
+				</div>
+				<div class="plase" id="plase">
+					<div class="blocks" id="blocks">	
+						<table clas="backgroundTable">
+						</div>
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</table>
+				</div>
+				<div class="control">
+					<input type="button" class="buttons"  id="prev_bt" value="< prev">
+					<input type="button" class="buttons" id="play" value="pause">
+					<input type="button" class="buttons" value="restart">
+					<input type="button" class="buttons" id="next_bt" value="next >">
+				</div>
+
+			</div>
+			<div class="rightContent"></div>
+		</div>
+		<div class="footer"></div>
+	</div>
+</body>
+<script>
+	function log(mes){console.log(mes);}
+	var sizeBlock = 49;
+	var borderBlock = 6;
+	var locationSize = 6;
+	var stages = {
+		1:{
+			1:[0,2,2,"h","#BE0000"],
+			2:[1,0,3,"h"],
+			3:[4,0,2,"v"],
+			4:[5,0,2,"v"],
+			5:[2,1,3,"v"],
+			6:[0,3,2,"v"],
+			7:[1,4,2,"h"],
+			8:[3,3,3,"h"],
+			9:[3,4,2,"v"],
+			10:[5,4,2,"v"],
+			11:[0,0,2,"v"]
+		},
+		2:{
+			1:[1,2,2,"h","#BE0000"],
+			2:[1,1,2,"h"],
+			3:[0,1,3,"v"],
+			4:[3,0,3,"v"],
+			5:[4,1,2,"h"],
+			6:[5,2,3,"v"],
+			7:[0,5,3,"h"],
+			8:[2,3,2,"v"],
+			9:[3,3,2,"h"],
+			10:[4,4,2,"v"],
+			11:[0,0,3,"h"]
+		}
+	};
+	var curentStage = 1;
+	var blocks = document.getElementById("blocks");
+	var arrayBlocks = [];
+	var GlobalCoordinates = (function(){
+		return{
+			getGlobalX: function(x){
+				return x * sizeBlock + (borderBlock);
+			},
+			getGlobalY: function(y){
+				return y * sizeBlock + (borderBlock);
+			},
+			getX: function(x){
+				return x / sizeBlock;
+			},
+			getY: function(y){
+				return y / sizeBlock;
+			}
+		};
+	}());
+	var Displays = {
+		total: 0,
+		time: 0,
+		timer: 0,
+		stageToDisplay: function(){
+			document.getElementById("stage").innerHTML = curentStage;
+		},
+		timeToDisplay: function(){
+			if(this.time > 0){
+				var minutes = Math.floor(Displays.time / 60);
+				var seconds = Displays.time % 60;
+				if (seconds < 10) seconds = "0" + seconds;
+				if (minutes < 10) minutes = "0" + minutes;
+				document.getElementById("time").innerHTML = minutes + ":" + seconds;
+			}else{
+				document.getElementById("time").innerHTML = "00:00";
+			}
+		},
+		upTime : function(){
+			if(this.timer == 0 && document.getElementById("1").style.backgroundColor != "gold"){
+				this.timer = setInterval(function(){
+					Displays.time++;
+					Displays.timeToDisplay();
+				}, 1000);
+			}
+		},
+		pausedTime: function(){
+			clearInterval(this.timer);
+			this.timer = 0;
+		},
+		clearTime: function(){
+			clearInterval(this.timer);
+			this.timer = 0;
+			this.time = 0;
+			this.timeToDisplay();
+		},
+		totalToDisplay: function(){
+			document.getElementById("total").innerHTML = this.total;
+		},
+		setTotalPP : function(){
+			if(document.getElementById("1").style.backgroundColor != "gold"){
+				this.total++;
+				this.totalToDisplay();
+			}
+		},
+		clearTotal : function(){
+			this.total = 0;
+			this.totalToDisplay();
+		}
+	};
+	var Mover = {
+		mouseX: 0,
+		mouseY: 0,
+		mouseMove: false,
+		mouseUp: false,
+		idBlock: 0,
+		minX: -1,
+		maxX: locationSize,
+		minY: -1,
+		maxY: locationSize,
+		mainMouseEvent: function(event){
+			if(this.idBlock > 0){
+				var blockElement = document.getElementById(this.idBlock);
+				var blockX = +blockElement.style.left.replace("px", "");
+				var blockY = +blockElement.style.top.replace("px", "");
+			}
+			var type = event.type;
+			if(this.idBlock > 0 && this.idBlock != event.target.id) type = "mouseup";
+			switch(type){
+				case "mousedown":
+					//console.log(event);
+					if(event.target.className == "block"){
+						this.mouseX = event.screenX;
+						this.mouseY = event.screenY;
+						this.mouseMove = false;
+						this.mouseUp = false;
+						this.idBlock = event.target.id;
+						this.minX = arrayBlocks[this.idBlock].get
+						for (var i = 1; i < arrayBlocks.length; i++) {
+							if(i != this.idBlock){
+								var yShY = arrayBlocks[i].areYouLocationY(arrayBlocks[this.idBlock].getLocationBlockX());
+								var xShX = arrayBlocks[i].areYouLocationX(arrayBlocks[this.idBlock].getLocationBlockY());
+								if(arrayBlocks[this.idBlock].getPosition() == "v"){
+									if(yShY){
+										if(yShY[1] < arrayBlocks[this.idBlock].getLocationBlockY()){
+											if(yShY[1] > Mover.minY)
+												Mover.minY = yShY[1];
+										}else{
+											if(yShY[0] < Mover.maxY)
+												Mover.maxY = yShY[0];
+										}
+									}
+								}else{
+									if(xShX){
+										if(xShX[1] < arrayBlocks[this.idBlock].getLocationBlockX()){
+											if(xShX[1] > Mover.minX)
+												Mover.minX = xShX[1];
+										}else{
+											if(xShX[0] < Mover.maxX)
+												Mover.maxX = xShX[0];
+										}
+									}
+								}
+							}
+						}
+					}
+				break;//
+				case "mousemove":
+					//-
+					if((this.mouseX > 0 || this.mouseY > 0) 
+						&& this.idBlock == event.target.id)
+					{
+						this.mouseMove = true;
+						var xShift = event.screenX - this.mouseX;
+						var yShift = event.screenY - this.mouseY;
+						this.mouseX = event.screenX;
+						this.mouseY = event.screenY;
+							var x = blockX + xShift;//event.target.offsetLeft + x;
+							var y = blockY + yShift;//event.target.offsetTop + y; 
+							if(arrayBlocks[this.idBlock].getLocationBlockX() > Mover.minX
+								&& arrayBlocks[this.idBlock].getLocationShiftX() < Mover.maxX
+								&& arrayBlocks[this.idBlock].getLocationShiftY() < Mover.maxY
+								&& arrayBlocks[this.idBlock].getLocationBlockY() > Mover.minY)
+							{
+								arrayBlocks[this.idBlock].moveTo(x, y);
+							}
+					}
+						this.mouseUp = false;
+				break;//
+				case "mouseup":
+					//-
+					function cooord(a){
+						var b = Math.round(a / sizeBlock);
+						if(a % b > sizeBlock/2) return (b + 1) * sizeBlock;
+						else return b * sizeBlock;
+					}
+
+					if(this.idBlock > 0){
+						arrayBlocks[this.idBlock].moveTo(cooord(blockX), cooord(blockY));
+						this.mouseX = 0;
+						this.mouseY = 0;
+						this.mouseUp = true;
+						this.mouseMove = false;
+						this.idBlock = 0;
+						var audio = new Audio();
+						audio.src = 'http://noisefx.ru/noise_base/05/02584.mp3';
+						audio.autoplay = true;
+						Displays.upTime();
+						Displays.setTotalPP();
+						Mover.minX = -1;
+						Mover.maxX = locationSize;
+						Mover.minY = -1;
+						Mover.maxY = locationSize;
+					}
+				break;//
+				default:
+				arrayBlocks[this.idBlock].moveTo(cooord(blockX), cooord(blockY));
+				break;//
+			}
+		},
+		getTypeMouseEvent: function(event){
+			return event.type;
+		},
+	};
+	function newStage(){
+		Displays.clearTime();
+		Displays.clearTotal();
+		Displays.stageToDisplay();
+		var oldBlocks = document.getElementsByClassName("block");
+		for (var i = oldBlocks.length - 1; i >= 0; i--) {
+			oldBlocks[i].parentNode.removeChild(oldBlocks[i]);
+		}
+		for(box in stages[curentStage]){
+			var block = new ObjBlock(box, 
+				stages[curentStage][box][0],
+				stages[curentStage][box][1],
+				stages[curentStage][box][2],
+				stages[curentStage][box][3],
+				stages[curentStage][box][4]);
+
+			arrayBlocks[box] = block;
+			blocks.appendChild(block.getBlock());
+		}
+		if(curentStage == 1)document.getElementById("prev_bt").disabled = true;
+		else document.getElementById("prev_bt").disabled = false;
+
+		document.getElementById("next_bt").disabled = true;
+	}
+	//-------------------- LISTNERS ---------------------------------
+	function listenerButtons(event){
+		switch(event.target.value){
+			case "pause":
+			blocksOnOff("none");
+			Displays.pausedTime();
+			document.getElementById("play").value = "play";
+			break;
+			case "play":
+			blocksOnOff("flex");
+			Displays.upTime();
+			document.getElementById("play").value = "pause";
+			break;
+			case "restart":
+			newStage();
+			break;
+			case "< prev":
+			if(curentStage > 1) curentStage--;
+			newStage();
+			break;
+			case "next >":
+			if(curentStage < Object.keys(stages).length) curentStage++;
+			newStage();			
+			break;
+		}
+		function blocksOnOff(displ){
+			for (var i = arrayBlocks.length - 1; i > 0; i--) {
+				document.getElementById(i).style.display = displ;
+			}
+		}
+	}
+	var buttons = document.getElementsByClassName("buttons");
+	for (var i = buttons.length - 1; i >= 0; i--) {
+		buttons[i].addEventListener("click", listenerButtons, false);
+	}
+	blocks.addEventListener("mousedown", Mover.mainMouseEvent, false);
+	blocks.addEventListener("mousemove", Mover.mainMouseEvent, false);
+	blocks.addEventListener("mouseup", Mover.mainMouseEvent, false);
+	//-------------------- END LISTNERS ------------------------------
+// log(GlobalCoordinates.getGlobalX(3));
+	// position = h | vertical
+	function ObjBlock(id, x, y, length, position, color = "gold"){
+		var block = document.createElement("DIV");
+		var myElement = document.getElementById(id);
+		var lengthBlock = (length * sizeBlock) - (borderBlock * 2);
+		var widthBlock = (sizeBlock - (borderBlock * 2));
+
+		block.setAttribute("id", id);
+		block.classList.add('block');
+		block.style.backgroundColor = color;
+		if(position == "v"){
+			block.style.height = lengthBlock +"px";
+			block.style.width = widthBlock +"px";
+		}else{
+			block.style.height = widthBlock +"px";
+			block.style.width = lengthBlock +"px";
+		}
+		block.style.left = x * sizeBlock +"px";
+		block.style.top = y * sizeBlock +"px";
+
+		this.getWidth = function(){
+			return widthBlock;
+		}
+		this.getLegnth = function(){
+			return lengthBlock;
+		}
+		this.getPosition = function(){
+			return position;
+		}
+		this.getBlockX = function(){
+			//console.log(+document.getElementById(id).style.left.replace("px", ""));
+			return +document.getElementById(id).style.left.replace("px", "");
+		}
+		this.getBlockY = function(){
+			return +document.getElementById(id).style.top.replace("px", "");
+		}
+		this.getLocationBlockX = function(){
+			var res = Math.floor(GlobalCoordinates.getX(this.getBlockX()));
+			// log(res);
+			return res;
+		}
+		this.getLocationBlockY = function(){
+			var res =Math.floor(GlobalCoordinates.getY(this.getBlockY()));
+			//log(res);
+			return res;
+		}
+		this.getBlockShiftX = function(){
+			return this.getBlockX() + (+document.getElementById(id).style.width.replace("px", "")) + borderBlock*2;
+		}
+		this.getBlockShiftY = function(){
+			return this.getBlockY() + (+document.getElementById(id).style.height.replace("px", "")) + borderBlock*2;
+		}
+		this.getLocationShiftX = function(){
+			return position == "v" ? 
+				Math.floor(GlobalCoordinates.getX(this.getBlockX()+3)) 
+				: Math.ceil(GlobalCoordinates.getX(this.getBlockX())) + length-1;
+		}
+		this.getLocationShiftY = function(){
+			return position == "h" ? 
+				Math.floor(GlobalCoordinates.getY(this.getBlockY()+3)) 
+				: Math.ceil(GlobalCoordinates.getY(this.getBlockY())) + length-1;
+		}
+		this.areYouLocationX = function(locationY){
+			if(locationY >= this.getLocationBlockY()
+				&& locationY <= this.getLocationShiftY()){
+					return [this.getLocationBlockX(), this.getLocationShiftX()];//
+			}else return false;
+		}
+		this.areYouLocationY = function(locationX){
+			if(locationX >= this.getLocationBlockX()
+				&& locationX <= this.getLocationShiftX()){
+					return [this.getLocationBlockY(), this.getLocationShiftY()];//
+			}else return false;
+		}
+/*		this.areYouThere = function(x, y, position, vector){
+			if(position == "v" ){
+				if(x >= this.getBlockX()
+					&& (x + sizeBlock) <= this.getBlockShiftX()){
+					if(vector > 0){
+						if(y >= this.getBlockY() && y <= this.getBlockShiftY())
+							return this.getBlockY();
+					}else{
+						if(y >= this.getBlockY() && y <= this.getBlockShiftY())
+							return this.getBlockShiftY();
+					}
+				}
+			}else{
+				if(y >= this.getBlockY()
+					&&(y + sizeBlock) <= this.getBlockShiftY()){
+					if(vector > 0){
+						if(x >= this.getBlockX() && x <= this.getBlockShiftX())
+							return this.getBlockX();
+					}else{
+						if(x >= this.getBlockX() && x <= this.getBlockShiftX())
+							return this.getBlockShiftX();
+					}
+				}
+			}
+			return false;
+		}*/
+//log(arrayBlocks[8].getBlockGlobalX());
+this.moveTo = function(x, y){
+			//проверка !стоит ли кто то на пути
+/*			var vector;
+			if(position == "v")
+				vector = y -this.getBlockY();
+			else
+				vector = x - this.getBlockX();
+			for(var i = 1; i < arrayBlocks.length; i++){
+				var result;
+				if(i != id){
+					if(position == "v"){
+						if(vector > 0){
+							result = arrayBlocks[i].areYouThere(x, this.getBlockShiftY(), "v", vector);
+						}else{
+							result = arrayBlocks[i].areYouThere(x, this.getBlockY(), "v", vector);
+						}
+					}else{
+						if(vector > 0){
+							result = arrayBlocks[i].areYouThere(this.getBlockShiftX(),y, "h", vector);
+						}else{
+							result = arrayBlocks[i].areYouThere(this.getBlockX(),y, "h", vector);
+						}
+					}
+					//if(result)	return false;
+				}
+			}*/
+			//проверка не выходим ли за границы поля
+			if(x < 1) x = 0;
+			if(y < 1) y = 0; 
+			var buttomBorder = document.getElementById("blocks").offsetHeight;
+			var rightBorder = document.getElementById("blocks").offsetWidth;
+			if(y + (length * sizeBlock + (borderBlock / 2)) > buttomBorder) 
+				y = buttomBorder - (length * sizeBlock + (borderBlock / 2))+1;
+			if(x + (length * sizeBlock + (borderBlock / 2)) > rightBorder){
+				if(block.style.backgroundColor != "gold")
+				{
+					block.innerHTML = "<b>WINNER!)</b>";
+					block.style.backgroundColor = "gold";
+					var audio = new Audio();
+					audio.src = 'https://wav-library.net/effect/new/7/wav-library-net_-_win_in_the_level.mp3';
+					audio.autoplay = true;
+					Displays.pausedTime();
+					if(curentStage < Object.keys(stages).length)
+						document.getElementById("next_bt").disabled = false;
+				}
+				x = rightBorder - (length * sizeBlock + (borderBlock / 2))+1;
+			}
+			//перемещаем блок
+			// console.log(x + "=" + xShift + " " + y + "=" + yShift);
+			if(position == "v"){
+				document.getElementById(id).style.top = y +"px";
+			}else{
+				document.getElementById(id).style.left = x +"px";
+			}
+			return true;
+		}
+		this.getBlock = function(){
+			return block;
+		}		
+	}
+
+	window.onload = function() {
+		newStage();
+	};
+
+</script>
+</html>
