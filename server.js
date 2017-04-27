@@ -15,7 +15,7 @@ app.use(express.static(__dirname + 'build/'));
 app.get('/', function(req, res) {
 
     // ejs render automatically looks in the views folder
-    res.render('block');
+    res.render('block.html');
 });
 
 app.listen(port, function() {
