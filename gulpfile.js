@@ -16,7 +16,7 @@ var gulp = require('gulp'),
 
 var path = {
     build: { //Тут мы укажем куда складывать готовые после сборки файлы
-        html: '/',
+        html: 'build/',
         js: 'build/js/',
         css: 'build/css/',
         img: 'build/img/',
@@ -40,7 +40,7 @@ var path = {
 };
 var config = {
     server: {
-        baseDir: "./"
+        baseDir: ".build/"
     },
     tunnel: true,
     host: 'localhost',
