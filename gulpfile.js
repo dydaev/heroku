@@ -40,7 +40,7 @@ var path = {
 };
 var config = {
     server: {
-        baseDir: ".build/"
+        baseDir: "./build"
     },
     tunnel: true,
     host: 'localhost',
