@@ -22,7 +22,7 @@ app.use(express.static(__dirname + 'build/'));
 app.get('/', function(req, res) {
 
     // ejs render automatically looks in the views folder
-    res.render('index');
+    res.render('tratata');
 });
 
 app.listen(port, function() {
